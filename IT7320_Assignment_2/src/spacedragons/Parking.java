@@ -14,10 +14,14 @@ import javax.swing.JButton;
 import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
 
 public class Parking extends JFrame {
 
 	private JPanel contentPane;
+	private JTextField textField;
+	private JTextField textField_1;
+	private int citizenId;
 
 	/**
 	 * Launch the application.
@@ -26,7 +30,7 @@ public class Parking extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Parking frame = new Parking();
+					Parking frame = new Parking(1);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -38,7 +42,8 @@ public class Parking extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Parking() {
+	public Parking(int passedCitizenId) {
+		this.citizenId = passedCitizenId;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 451, 487);
 		contentPane = new JPanel();
@@ -47,7 +52,7 @@ public class Parking extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel label = new JLabel("Logo goes here");
+		JLabel label = new JLabel("logo goes here");
 		label.setForeground(new Color(101, 255, 3));
 		label.setFont(new Font("Candara", Font.BOLD, 14));
 		label.setBounds(166, 11, 104, 23);
@@ -63,7 +68,7 @@ public class Parking extends JFrame {
 		JLabel label_2 = new JLabel("<html><body><center>When your dragon is within the Transmorgrification zone, press Transmorgrificate.</center></html></body>");
 		label_2.setForeground(new Color(101, 255, 3));
 		label_2.setFont(new Font("Candara", Font.BOLD, 16));
-		label_2.setBounds(91, 84, 245, 93);
+		label_2.setBounds(91, 84, 245, 63);
 		contentPane.add(label_2);
 		
 		JButton button = new JButton("Transmorgrificate!");
@@ -77,7 +82,7 @@ public class Parking extends JFrame {
 		button.setForeground(new Color(127, 23, 105));
 		button.setFont(new Font("Candara", Font.BOLD, 18));
 		button.setBackground(new Color(101, 255, 3));
-		button.setBounds(116, 234, 199, 28);
+		button.setBounds(120, 284, 199, 28);
 		contentPane.add(button);
 		
 		JTextArea textArea = new JTextArea();
@@ -101,6 +106,27 @@ public class Parking extends JFrame {
 		button_1.setBackground(new Color(101, 255, 3));
 		button_1.setBounds(366, 10, 47, 23);
 		contentPane.add(button_1);
+		
+		JLabel lblSteedName = new JLabel("Steed Name:");
+		lblSteedName.setForeground(new Color(101, 255, 3));
+		lblSteedName.setFont(new Font("Candara", Font.BOLD, 16));
+		lblSteedName.setBounds(71, 169, 86, 23);
+		contentPane.add(lblSteedName);
+		
+		JLabel lblSpecies = new JLabel("Species:");
+		lblSpecies.setForeground(new Color(101, 255, 3));
+		lblSpecies.setFont(new Font("Candara", Font.BOLD, 16));
+		lblSpecies.setBounds(71, 218, 86, 23);
+		contentPane.add(lblSpecies);
+		
+		textField = new JTextField();
+		textField.setBounds(166, 170, 210, 20);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		textField_1 = new JTextField();
+		textField_1.setColumns(10);
+		textField_1.setBounds(131, 219, 245, 20);
+		contentPane.add(textField_1);
 	}
-
 }
