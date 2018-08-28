@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -15,9 +17,13 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
 
 public class Retrieve extends JFrame {
@@ -99,6 +105,29 @@ public class Retrieve extends JFrame {
 		contentPane.add(btnCancel);
 		
 		JButton btnAcceptThePrice = new JButton("Accept the Price");
+		btnAcceptThePrice.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				//If user pays:
+				try {
+					connect = DriverManager.getConnection(dbUrl, uname, password);
+					
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyMMdd HH:mm:ss");
+					LocalDateTime now = LocalDateTime.now();
+
+					String sql = "UPDATE invoice SET datePaid = '" + now.toString() + "' WHERE invoiceId = '" + invoiceId + "')";
+					//even if it says parts of this are depricated and slashes through them, you still need to leave them there.
+
+					preparedStatement = connect.prepareStatement(sql);
+					preparedStatement.executeUpdate();
+					
+					btnAcceptThePrice.setText("DragonRetrieved, put actual retrieval event here.");
+
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		btnAcceptThePrice.setForeground(new Color(127, 23, 105));
 		btnAcceptThePrice.setFont(new Font("Candara", Font.BOLD, 18));
 		btnAcceptThePrice.setBackground(new Color(101, 255, 3));
