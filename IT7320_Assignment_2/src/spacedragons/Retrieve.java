@@ -14,6 +14,10 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 
 public class Retrieve extends JFrame {
@@ -22,6 +26,17 @@ public class Retrieve extends JFrame {
 	private JTextField txtTotalcost;
 	private JTextField txtDateparked;
 	private JTextField txtDateretrieved;
+	
+	private int invoiceId;
+	
+	private Connection connect = null;
+	private Statement statement = null;
+	private PreparedStatement preparedStatement = null;
+	private ResultSet resultSet = null;
+
+	static final String dbUrl = "jdbc:mysql://localhost:3306/spacedragons";
+	static final String uname = "root";
+	static final String password = "";
 
 	/**
 	 * Launch the application.
@@ -30,7 +45,7 @@ public class Retrieve extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Retrieve frame = new Retrieve();
+					Retrieve frame = new Retrieve(1);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -41,8 +56,9 @@ public class Retrieve extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @param invoiceId 
 	 */
-	public Retrieve() {
+	public Retrieve(int invoiceId) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 451, 487);
 		contentPane = new JPanel();

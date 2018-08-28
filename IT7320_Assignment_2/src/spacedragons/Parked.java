@@ -10,13 +10,35 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 
 public class Parked extends JFrame {
 
 	private JPanel contentPane;
+	
+	private int citizenId;
+	private int dragonId;
+	private int invoiceId;
+	
+	private String dragonName = "empty";
+	
+	private Connection connect = null;
+	private Statement statement = null;
+	private PreparedStatement preparedStatement = null;
+	private ResultSet resultSet = null;
+
+	static final String dbUrl = "jdbc:mysql://localhost:3306/spacedragons";
+	static final String uname = "root";
+	static final String password = "";
 
 	/**
 	 * Launch the application.
@@ -25,7 +47,7 @@ public class Parked extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Parked frame = new Parked();
+					Parked frame = new Parked(1,1,1);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -36,8 +58,15 @@ public class Parked extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @param passedInvoiceId2 
+	 * @param passedDragonId 
+	 * @param passedCitizenId 
 	 */
-	public Parked() {
+	public Parked(int passedCitizenId, int passedDragonId, int passedInvoiceId) {
+		this.citizenId = passedCitizenId;
+		this.dragonId = passedDragonId;
+		this.invoiceId = passedInvoiceId;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 451, 487);
 		contentPane = new JPanel();
@@ -49,7 +78,7 @@ public class Parked extends JFrame {
 		JButton button = new JButton("Retrieve Dragon");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Retrieve retrieve = new Retrieve();
+				Retrieve retrieve = new Retrieve(invoiceId);
 				retrieve.setVisible(true);
 				dispose();
 			}
@@ -74,7 +103,23 @@ public class Parked extends JFrame {
 		label.setBounds(79, 282, 245, 42);
 		contentPane.add(label);
 		
-		JLabel label_1 = new JLabel("<html><body><center>Your dragon has been sent to the Demiplane of Parking!</center></html></body>");
+		//get dragon's name: 
+		try {
+			connect = DriverManager.getConnection(dbUrl, uname, password);
+			
+			String sql = "select * from dragon where dragonId = '" + dragonId + "'";
+			
+			preparedStatement = connect.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			
+			if (resultSet.next()) {
+				dragonName = resultSet.getString("name");				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		JLabel label_1 = new JLabel("<html><body><center>Your dragon: " + dragonName + " has been sent to the Demiplane of Parking!</center></html></body>");
 		label_1.setForeground(new Color(101, 255, 3));
 		label_1.setFont(new Font("Candara", Font.BOLD, 16));
 		label_1.setBounds(79, 67, 245, 75);

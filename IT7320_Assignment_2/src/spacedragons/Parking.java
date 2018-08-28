@@ -8,20 +8,42 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
 public class Parking extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField name;
+	private JTextField species;
+	
 	private int citizenId;
+	private int dragonId;
+	private int invoiceId;
+	
+	private Connection connect = null;
+	private Statement statement = null;
+	private PreparedStatement preparedStatement = null;
+	private ResultSet resultSet = null;
+
+	static final String dbUrl = "jdbc:mysql://localhost:3306/spacedragons";
+	static final String uname = "root";
+	static final String password = "";
 
 	/**
 	 * Launch the application.
@@ -74,9 +96,64 @@ public class Parking extends JFrame {
 		JButton button = new JButton("Transmorgrificate!");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Parked parked = new Parked();
-				parked.setVisible(true);
-				dispose();
+				
+				try {
+					//Create Dragon entry in database
+					connect = DriverManager.getConnection(dbUrl, uname, password);
+
+					String sql = "INSERT INTO dragon(citizenId, name, species, parked) " + "VALUES('"
+							+ citizenId + "','" + name.getText() + "','" + species.getText() + "',TRUE)";
+					//even if it says parts of this are depricated and slashes through them, you still need to leave them there.
+
+					String dragonKey[] = {"dragonId"};
+					
+					preparedStatement = connect.prepareStatement(sql, dragonKey);
+					preparedStatement.executeUpdate();
+					
+					ResultSet rs = preparedStatement.getGeneratedKeys();
+					
+					if (rs.next()) {
+						dragonId = rs.getInt(1);
+					}
+					
+					try {
+						//Create Invoice entry in database
+						connect = DriverManager.getConnection(dbUrl, uname, password);
+						
+						DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyMMdd HH:mm:ss");
+						LocalDateTime now = LocalDateTime.now();
+						
+						sql = "INSERT INTO invoice(citizenId, dragonId, dateParked) " + "VALUES('"
+								+ citizenId + "','" + dragonId + "','" + now.toString() + "')";
+						//even if it says parts of this are depricated and slashes through them, you still need to leave them there.
+
+						String invoiceKey[] = {"invoiceId"};
+						
+						preparedStatement = connect.prepareStatement(sql, invoiceKey);
+						preparedStatement.executeUpdate();
+						
+						rs = preparedStatement.getGeneratedKeys();
+						
+						if (rs.next()) {
+							invoiceId = rs.getInt(1);
+						}
+						
+						Parked parked = new Parked(citizenId, dragonId, invoiceId);
+						parked.setVisible(true);
+						dispose();
+
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+					
+					Parked parked = new Parked(citizenId, dragonId, invoiceId);
+					parked.setVisible(true);
+					dispose();
+
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+
 			}
 		});
 		button.setForeground(new Color(127, 23, 105));
@@ -119,14 +196,14 @@ public class Parking extends JFrame {
 		lblSpecies.setBounds(71, 218, 86, 23);
 		contentPane.add(lblSpecies);
 		
-		textField = new JTextField();
-		textField.setBounds(166, 170, 210, 20);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		name = new JTextField();
+		name.setBounds(166, 170, 210, 20);
+		contentPane.add(name);
+		name.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(131, 219, 245, 20);
-		contentPane.add(textField_1);
+		species = new JTextField();
+		species.setColumns(10);
+		species.setBounds(131, 219, 245, 20);
+		contentPane.add(species);
 	}
 }
