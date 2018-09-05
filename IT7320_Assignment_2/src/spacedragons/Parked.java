@@ -90,6 +90,13 @@ public class Parked extends JFrame {
 		contentPane.add(button);
 		
 		JButton button_1 = new JButton("Go to Dashboard");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ParkingGUI parkingGui = new ParkingGUI(citizenId, dragonId, invoiceId);
+				parkingGui.setVisible(true);
+				dispose();
+			}
+		});
 		button_1.setForeground(new Color(127, 23, 105));
 		button_1.setFont(new Font("Candara", Font.BOLD, 18));
 		button_1.setBackground(new Color(101, 255, 3));

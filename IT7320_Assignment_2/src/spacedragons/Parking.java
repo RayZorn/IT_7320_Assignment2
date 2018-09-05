@@ -145,10 +145,6 @@ public class Parking extends JFrame {
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
-					
-					Parked parked = new Parked(citizenId, dragonId, invoiceId);
-					parked.setVisible(true);
-					dispose();
 
 				} catch (SQLException e1) {
 					e1.printStackTrace();
