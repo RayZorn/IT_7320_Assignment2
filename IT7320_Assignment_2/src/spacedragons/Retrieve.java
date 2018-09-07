@@ -11,6 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
@@ -34,6 +37,11 @@ public class Retrieve extends JFrame {
 	private JTextField txtDateretrieved;
 	
 	private int invoiceId;
+	private int dragonId;
+	private int citizenId;
+	private int currentBalance;
+	private int totalCosts;
+	private String events;
 	
 	private Connection connect = null;
 	private Statement statement = null;
@@ -51,7 +59,7 @@ public class Retrieve extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Retrieve frame = new Retrieve(1);
+					Retrieve frame = new Retrieve(1, 1, "none");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -64,7 +72,14 @@ public class Retrieve extends JFrame {
 	 * Create the frame.
 	 * @param invoiceId 
 	 */
-	public Retrieve(int invoiceId) {
+	public Retrieve(int invoiceId, int totalCosts, String events) {
+		this.invoiceId = invoiceId;
+		this.totalCosts = totalCosts;
+		this.events = events;
+		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyMMdd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 451, 487);
 		contentPane = new JPanel();
@@ -73,10 +88,12 @@ public class Retrieve extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel label = new JLabel("Logo goes here");
+		JLabel label = new JLabel("");
 		label.setForeground(new Color(101, 255, 3));
 		label.setFont(new Font("Candara", Font.BOLD, 14));
-		label.setBounds(166, 12, 104, 23);
+		Image img = new ImageIcon(this.getClass().getResource("/ZorpLogoSmall.png")).getImage();
+		label.setIcon(new ImageIcon(img));	
+		label.setBounds(10, 11, 84, 64);
 		contentPane.add(label);
 		
 		JButton button = new JButton("X");
@@ -98,10 +115,16 @@ public class Retrieve extends JFrame {
 		contentPane.add(lbldragonCheckout);
 		
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				btnCancel.setText("It is too late for that now");
+				btnCancel.setBounds(104, 398, 233, 28);
+			}
+		});
 		btnCancel.setForeground(new Color(127, 23, 105));
 		btnCancel.setFont(new Font("Candara", Font.BOLD, 18));
 		btnCancel.setBackground(new Color(101, 255, 3));
-		btnCancel.setBounds(321, 397, 104, 28);
+		btnCancel.setBounds(155, 395, 119, 28);
 		contentPane.add(btnCancel);
 		
 		JButton btnAcceptThePrice = new JButton("Accept the Price");
@@ -109,23 +132,108 @@ public class Retrieve extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				//If user pays:
+				
+				//Set the date paid on invoice
 				try {
 					connect = DriverManager.getConnection(dbUrl, uname, password);
-					
-					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyMMdd HH:mm:ss");
-					LocalDateTime now = LocalDateTime.now();
 
-					String sql = "UPDATE invoice SET datePaid = '" + now.toString() + "' WHERE invoiceId = '" + invoiceId + "')";
+					String sql = "UPDATE invoice SET datePaid = '" + now.toString() + "' WHERE invoiceId = '" + invoiceId + "'";
 					//even if it says parts of this are depricated and slashes through them, you still need to leave them there.
 
 					preparedStatement = connect.prepareStatement(sql);
 					preparedStatement.executeUpdate();
 					
-					btnAcceptThePrice.setText("DragonRetrieved, put actual retrieval event here.");
+					//Get the dragon Id
+					try {
+						connect = DriverManager.getConnection(dbUrl, uname, password);
+						
+						sql = "select * from invoice where invoiceId = '" + invoiceId + "'";
+						
+						preparedStatement = connect.prepareStatement(sql);
+						resultSet = preparedStatement.executeQuery();
+						
+						if (resultSet.next()) {
+							dragonId = resultSet.getInt("dragonId");				
+						}
+						
+						//Set the dragon as unparked.
+						try {
+							connect = DriverManager.getConnection(dbUrl, uname, password);
 
+							sql = "Update dragon SET parked = '" + 0 + "' WHERE `dragonId` = '" + dragonId + "'";
+							//even if it says parts of this are depricated and slashes through them, you still need to leave them there.
+
+							preparedStatement = connect.prepareStatement(sql);
+							preparedStatement.executeUpdate();
+							
+							//Get the citizen Id
+							try {
+								connect = DriverManager.getConnection(dbUrl, uname, password);
+								
+								sql = "select * from invoice where invoiceId = '" + invoiceId + "'";
+								
+								preparedStatement = connect.prepareStatement(sql);
+								resultSet = preparedStatement.executeQuery();
+								
+								if (resultSet.next()) {
+									citizenId = resultSet.getInt("citizenId");				
+								}
+								
+								//Get the citizen current balance
+								try {
+									connect = DriverManager.getConnection(dbUrl, uname, password);
+									
+									sql = "select * from citizen where citizenId = '" + citizenId + "'";
+									
+									preparedStatement = connect.prepareStatement(sql);
+									resultSet = preparedStatement.executeQuery();
+									
+									if (resultSet.next()) {
+										currentBalance = resultSet.getInt("zorpbucks");				
+									}
+									
+									//update the citizen's balance
+									try {
+										connect = DriverManager.getConnection(dbUrl, uname, password);
+
+										int newbalance = currentBalance - totalCosts;
+										
+										sql = "UPDATE citizen SET zorpbucks = '" + newbalance + "' WHERE citizenId = '" + citizenId + "'";
+										//even if it says parts of this are depricated and slashes through them, you still need to leave them there.
+
+										preparedStatement = connect.prepareStatement(sql);
+										preparedStatement.executeUpdate();
+										
+										JOptionPane.showMessageDialog(contentPane, "Payment Success. Zorp thanks you for your loyalty");
+										Parking parking = new Parking(citizenId);
+										parking.setVisible(true);
+										dispose();
+
+									} catch (SQLException e) {
+										JOptionPane.showMessageDialog(contentPane, "Failed to update balance");
+										e.printStackTrace();
+									}
+								} catch (SQLException e) {
+									JOptionPane.showMessageDialog(contentPane, "Failed to get Current Balance");
+									e.printStackTrace();
+								}
+							} catch (SQLException e) {
+								JOptionPane.showMessageDialog(contentPane, "Failed to get citizen Id");
+								e.printStackTrace();
+							}
+						} catch (SQLException e) {
+							JOptionPane.showMessageDialog(contentPane, "Failed to set dragon as unparked");
+							e.printStackTrace();
+						}
+					} catch (SQLException e) {
+						JOptionPane.showMessageDialog(contentPane, "Failed to get dragon Id");
+						e.printStackTrace();
+					}
 				} catch (SQLException e) {
+					JOptionPane.showMessageDialog(contentPane, "Failed to set date paid");
 					e.printStackTrace();
 				}
+				
 			}
 		});
 		btnAcceptThePrice.setForeground(new Color(127, 23, 105));
@@ -142,7 +250,7 @@ public class Retrieve extends JFrame {
 		
 		txtTotalcost = new JTextField();
 		txtTotalcost.setEditable(false);
-		txtTotalcost.setText("TotalCost");
+		txtTotalcost.setText(Integer.toString(this.totalCosts));
 		txtTotalcost.setBounds(230, 93, 86, 20);
 		contentPane.add(txtTotalcost);
 		txtTotalcost.setColumns(10);
@@ -167,13 +275,15 @@ public class Retrieve extends JFrame {
 		contentPane.add(lblDateRetrieved);
 		
 		txtDateretrieved = new JTextField();
-		txtDateretrieved.setText("DateRetrieved");
+		txtDateretrieved.setEditable(false);
+		txtDateretrieved.setText(now.toString());
 		txtDateretrieved.setBounds(230, 304, 86, 20);
 		contentPane.add(txtDateretrieved);
 		txtDateretrieved.setColumns(10);
 		
 		JTextPane txtpnEvents = new JTextPane();
-		txtpnEvents.setText("Events");
+		txtpnEvents.setEditable(false);
+		txtpnEvents.setText(this.events);
 		txtpnEvents.setBounds(107, 127, 209, 132);
 		contentPane.add(txtpnEvents);
 	}

@@ -265,6 +265,11 @@ public class ParkingGUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) 
 			{
+				
+				Retrieve retrieve = new Retrieve(invoiceId,  totalCosts, additionalChargesTextArea.getText());
+				retrieve.setVisible(true);
+				dispose();
+				/* Calin - Commented this out while setting button to go to retrieve.java
 				secondsPassed = 0;
 				
 				balanceTextPane.setText("$" + Integer.toString(balance - totalCosts));
@@ -273,6 +278,7 @@ public class ParkingGUI extends JFrame {
 				timeText.setText("0");		
 				
 				totalCosts = 0;
+				*/
 			}
 		});
 		btnPay.setBounds(152, 169, 123, 23);

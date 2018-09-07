@@ -12,9 +12,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -71,11 +74,14 @@ public class Register extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lblLogo = new JLabel("Logo goes here");
+		JLabel lblLogo = new JLabel("");
 		lblLogo.setForeground(new Color(101, 255, 03));
 		lblLogo.setFont(new Font("Candara", Font.BOLD, 14));
-		lblLogo.setBounds(172, 11, 104, 23);
+		Image img = new ImageIcon(this.getClass().getResource("/ZorpLogoSmall.png")).getImage();
+		lblLogo.setIcon(new ImageIcon(img));	
+		lblLogo.setBounds(18, 10, 84, 64);
 		contentPane.add(lblLogo);
+		
 
 		JLabel lblLogin = new JLabel("Register");
 		lblLogin.setHorizontalAlignment(SwingConstants.CENTER);
