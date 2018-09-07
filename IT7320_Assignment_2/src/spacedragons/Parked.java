@@ -7,8 +7,11 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -75,33 +78,20 @@ public class Parked extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JButton button = new JButton("Retrieve Dragon");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Retrieve retrieve = new Retrieve(invoiceId);
-				retrieve.setVisible(true);
-				dispose();
-			}
-		});
-		button.setForeground(new Color(127, 23, 105));
-		button.setFont(new Font("Candara", Font.BOLD, 18));
-		button.setBackground(new Color(101, 255, 3));
-		button.setBounds(125, 397, 163, 28);
-		contentPane.add(button);
-		
-		JButton button_1 = new JButton("Go to Dashboard");
-		button_1.addActionListener(new ActionListener() {
+		JButton dashboardButton = new JButton("Go to Dashboard");
+		dashboardButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ParkingGUI parkingGui = new ParkingGUI(citizenId, dragonId, invoiceId);
 				parkingGui.setVisible(true);
 				dispose();
 			}
 		});
-		button_1.setForeground(new Color(127, 23, 105));
-		button_1.setFont(new Font("Candara", Font.BOLD, 18));
-		button_1.setBackground(new Color(101, 255, 3));
-		button_1.setBounds(104, 358, 199, 28);
-		contentPane.add(button_1);
+		
+		dashboardButton.setForeground(new Color(127, 23, 105));
+		dashboardButton.setFont(new Font("Candara", Font.BOLD, 18));
+		dashboardButton.setBackground(new Color(101, 255, 3));
+		dashboardButton.setBounds(104, 358, 199, 28);
+		contentPane.add(dashboardButton);
 		
 		JLabel label = new JLabel("<html><body><center>Zorp accepts your wise gratitude</center></html></body>");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -132,10 +122,12 @@ public class Parked extends JFrame {
 		label_1.setBounds(79, 67, 245, 75);
 		contentPane.add(label_1);
 		
-		JLabel label_2 = new JLabel("Logo goes here");
+		JLabel label_2 = new JLabel("");
 		label_2.setForeground(new Color(101, 255, 3));
 		label_2.setFont(new Font("Candara", Font.BOLD, 14));
-		label_2.setBounds(153, 12, 104, 23);
+		Image img = new ImageIcon(this.getClass().getResource("/ZorpLogoSmall.png")).getImage();
+		label_2.setIcon(new ImageIcon(img));	
+		label_2.setBounds(167, 11, 84, 64);
 		contentPane.add(label_2);
 		
 		JButton button_2 = new JButton("X");
