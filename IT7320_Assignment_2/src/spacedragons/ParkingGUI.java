@@ -291,16 +291,16 @@ public class ParkingGUI extends JFrame {
 			{
 				running = false;
 				
-				try {
-					connect = DriverManager.getConnection(dbUrl, uname, password);
-					String sql = "delete from dragon where dragonId = '" + dragonId + "'";					
-					preparedStatement = connect.prepareStatement(sql);
-					resultSet = preparedStatement.executeQuery();
+				//try {
+				//	connect = DriverManager.getConnection(dbUrl, uname, password);
+				//	String sql = "delete from dragon where dragonId = '" + dragonId + "'";					
+				//	preparedStatement = connect.prepareStatement(sql);
+				//	resultSet = preparedStatement.executeQuery();
 					
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}					
+				//} catch (SQLException e) {
+				//	// TODO Auto-generated catch block
+				//	e.printStackTrace();
+				//}					
 				//Retrieve retrieve = new Retrieve(invoiceId,  totalCosts, additionalChargesTextArea.getText());
 				//retrieve.setVisible(true);
 				dispose();	
