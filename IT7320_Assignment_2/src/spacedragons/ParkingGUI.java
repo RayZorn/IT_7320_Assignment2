@@ -308,8 +308,8 @@ public class ParkingGUI extends JFrame {
 				//	// TODO Auto-generated catch block
 				//	e.printStackTrace();
 				//}					
-				//Retrieve retrieve = new Retrieve(invoiceId,  totalCosts, additionalChargesTextArea.getText());
-				//retrieve.setVisible(true);
+				Parking parking = new Parking(citizenId);
+				parking.setVisible(true);
 				dispose();	
 			}
 		});
