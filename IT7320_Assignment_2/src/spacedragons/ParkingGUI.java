@@ -74,6 +74,9 @@ public class ParkingGUI extends JFrame {
 	JButton btnStop = new JButton("Stop Parking");
 	int dragonFined; 
 	JTextArea additionalChargesTextArea = new JTextArea();
+	
+	
+	
 
 
 	public static void main(String[] args) {
@@ -123,18 +126,21 @@ public class ParkingGUI extends JFrame {
 		
 		JTextPane timeText = new JTextPane();
 		timeText.setText("0");
+		timeText.setEditable(false);
 		timeText.setBorder(BorderFactory.createLineBorder(Color.black));
 		timeText.setBounds(9, 131, 115, 20);
 		contentPane.add(timeText);
 		
 		JTextPane moneyOwed = new JTextPane();
 		moneyOwed.setText("$0");
+		moneyOwed.setEditable(false);
 		moneyOwed.setBorder(BorderFactory.createLineBorder(Color.black));
 		moneyOwed.setBounds(152, 131, 123, 20);
 		contentPane.add(moneyOwed);
 		
 		JTextPane balanceTextPane = new JTextPane();
-		balanceTextPane.setText(Integer.toString(balance));
+		balanceTextPane.setText("$ " + Integer.toString(balance));
+		balanceTextPane.setEditable(false);
 		balanceTextPane.setBorder(BorderFactory.createLineBorder(Color.black));
 		balanceTextPane.setBounds(152, 42, 123, 20);
 		contentPane.add(balanceTextPane);
@@ -244,6 +250,7 @@ public class ParkingGUI extends JFrame {
 		additionalChargesTextArea.setBounds(285, 42, 164, 184);
 		//contentPane.add(additionalChargesTextArea);
 		additionalChargesTextArea.setBorder(BorderFactory.createLineBorder(Color.black));
+		additionalChargesTextArea.setEditable(false);
 		scroll.setBounds(302, 42, 147, 184);
 		scroll.setViewportView(additionalChargesTextArea);
 		contentPane.add(scroll);
@@ -265,7 +272,7 @@ public class ParkingGUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) 
 			{
-				
+				running = false;
 				Retrieve retrieve = new Retrieve(invoiceId,  totalCosts, additionalChargesTextArea.getText());
 				retrieve.setVisible(true);
 				dispose();
@@ -289,17 +296,21 @@ public class ParkingGUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) 
 			{
-				totalCosts = 0;
-				secondsPassed = 0;
-				
-				btnStart.setVisible(false);
-				btnStop.setVisible(false);
-				//btnStart.setEnabled(false);
-				btnStop.setEnabled(false);
 				running = false;
 				
-				moneyOwed.setText("$0");
-				timeText.setText("0");		
+				//try {
+				//	connect = DriverManager.getConnection(dbUrl, uname, password);
+				//	String sql = "delete from dragon where dragonId = '" + dragonId + "'";					
+				//	preparedStatement = connect.prepareStatement(sql);
+				//	resultSet = preparedStatement.executeQuery();
+					
+				//} catch (SQLException e) {
+				//	// TODO Auto-generated catch block
+				//	e.printStackTrace();
+				//}					
+				//Retrieve retrieve = new Retrieve(invoiceId,  totalCosts, additionalChargesTextArea.getText());
+				//retrieve.setVisible(true);
+				dispose();	
 			}
 		});
 		btnDonateDragon.setBounds(152, 203, 123, 23);
