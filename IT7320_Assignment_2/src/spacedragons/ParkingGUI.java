@@ -68,15 +68,30 @@ public class ParkingGUI extends JFrame {
 	private final Action action_1 = new SwingAction_1();
 	
 	ParkingTimer timer = new ParkingTimer();
-	double secondsPassed = 0;	
+	Random rand = new Random();
+	Timer myTimer = new Timer("StopWatchTime");
+	public double secondsPassed = 0;	
 	boolean running = true;
 	int totalCosts = 0;
 	JButton btnStop = new JButton("Stop Parking");
 	int dragonFined; 
 	JTextArea additionalChargesTextArea = new JTextArea();
+	JTextPane moneyOwed;
+	JButton btnStart;
+	JTextPane timeText;
+	int costsCounter;
+	Boolean testing;
 	
+	public double getCurrentTime()
+	{
+		return secondsPassed;
+	}
 	
-	
+	public boolean isTimerRunning()
+	{
+		//System.out.println("Hello?");
+		return running;
+	}
 
 
 	public static void main(String[] args) {
@@ -91,8 +106,6 @@ public class ParkingGUI extends JFrame {
 			}
 		});
 	}
-	
-
 
 
 	public ParkingGUI(int passedCitizenId, int passedDragonId, int passedInvoiceId) {
@@ -124,14 +137,14 @@ public class ParkingGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JTextPane timeText = new JTextPane();
+		timeText = new JTextPane();
 		timeText.setText("0");
 		timeText.setEditable(false);
 		timeText.setBorder(BorderFactory.createLineBorder(Color.black));
 		timeText.setBounds(9, 131, 115, 20);
 		contentPane.add(timeText);
 		
-		JTextPane moneyOwed = new JTextPane();
+		moneyOwed = new JTextPane();
 		moneyOwed.setText("$0");
 		moneyOwed.setEditable(false);
 		moneyOwed.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -145,80 +158,21 @@ public class ParkingGUI extends JFrame {
 		balanceTextPane.setBounds(152, 42, 123, 20);
 		contentPane.add(balanceTextPane);
 		
-		JButton btnStart = new JButton("Start Parking");
+		btnStart = new JButton("Start Parking");
 		btnStart.addMouseListener(new MouseAdapter() 
-		{
-			int costsCounter = 0;
-			
-			
-			
+		{			
 			@Override
 			public void mouseClicked(MouseEvent arg0) 
-			{				
+			{		
+				btnStart.setVisible(false);
 				btnStop.setVisible(true);
-				//running = timer.start();
-				
-				Timer myTimer = new Timer("StopWatchTime");
-				
-				Random rand = new Random();
-				
-				
-				
-				TimerTask task = new TimerTask()
-				{
-					public void run() 
-					{
-						if(running == false)
-						{
-							//btnStart.setEnabled(true);
-							myTimer.cancel();
-							running = true;
-						}
-						else
-						{
-							if(costsCounter == 10) 
-							{
-								totalCosts = totalCosts + 13;
-								
-								moneyOwed.setText("$" + Integer.toString(totalCosts));
-								
-								costsCounter = 0;
-							}
-							
-							dragonFined = rand.nextInt(10) + 1;
-							
-							if(dragonFined == 5) 
-							{
-								System.out.println("Opps1" + dragonFined / 10 );	
-								
-								additionalChargesTextArea.setText(additionalChargesTextArea.getText() + "\n\n" + "Opps1. +$100");
-								
-								totalCosts = totalCosts + 100;
-							} 
-								else if(dragonFined == 6) 
-							{
-								System.out.println("Opps2" + dragonFined / 10 );	
-								
-								additionalChargesTextArea.setText(additionalChargesTextArea.getText() + "\n\n" + "Opps2. +$200");
-								
-								totalCosts = totalCosts + 200;
-							}						
-							
-							costsCounter++;
-							
-							//btnStart.setEnabled(false);
-							btnStart.setVisible(false);
-							//System.out.println(running);
-							secondsPassed++;					
-							timeText.setText(Double.toString(secondsPassed / 10));		
-							System.out.println(secondsPassed / 10 );	
-						}
-					}
-				};	
-				
-				myTimer.scheduleAtFixedRate(task, 100, 100);
+
+				startTimer(false);
+
 			}
+
 		});
+
 		
 		
 		
@@ -229,10 +183,11 @@ public class ParkingGUI extends JFrame {
 			public void mouseClicked(MouseEvent arg0) 
 			{
 				//secondsPassed = 0;
+				//btnStart.setEnabled(true);
 				btnStart.setVisible(true);
 				btnStop.setVisible(false);
-				//btnStart.setEnabled(true);
-				running = timer.stop();
+				
+				stopTimer();
 			}
 		});
 		btnStop.setBounds(10, 203, 114, 23);
@@ -240,9 +195,6 @@ public class ParkingGUI extends JFrame {
 		btnStart.setBounds(10, 169, 114, 23);
 		contentPane.add(btnStart);
 		
-		String[] petStrings = { "Task1", "Task2", "Task3", "Task4", "Task5" };
-
-
 		JScrollPane scroll = new JScrollPane();
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		additionalChargesTextArea.setText("Description:");
@@ -342,6 +294,10 @@ public class ParkingGUI extends JFrame {
 		contentPane.add(lblBalance);
 	}
 
+	public ParkingGUI() {
+		// TODO Auto-generated constructor stub
+	}
+
 	private class SwingAction extends AbstractAction {
 		public SwingAction() {
 			putValue(NAME, "SwingAction");
@@ -357,5 +313,84 @@ public class ParkingGUI extends JFrame {
 		}
 		public void actionPerformed(ActionEvent e) {
 		}
+	}
+	
+	public void stopTimer() 
+	{
+		running = false;
+	}
+	
+	
+	public void startTimer(Boolean test) 
+	{
+		costsCounter = 0;
+		
+		testing = test;
+		
+		TimerTask task = new TimerTask()
+		{
+			public void run() 
+			{
+				if(running == false)
+				{
+					//btnStart.setEnabled(true);
+					//myTimer.cancel();					
+				}
+				else 
+				{
+					if(costsCounter == 10 && testing == false) 
+					{
+						totalCosts = totalCosts + 13;
+						
+						moneyOwed.setText("$" + Integer.toString(totalCosts));
+						
+						costsCounter = 0;
+					
+					
+						dragonFined = rand.nextInt(10) + 1;
+						
+						if(dragonFined == 5) 
+						{
+							System.out.println("Opps1" + dragonFined / 10 );	
+							
+							additionalChargesTextArea.setText(additionalChargesTextArea.getText() + "\n\n" + "Opps1. +$100");
+							
+							totalCosts = totalCosts + 100;
+						} 
+							else if(dragonFined == 6) 
+						{
+							System.out.println("Opps2" + dragonFined / 10 );	
+							
+							additionalChargesTextArea.setText(additionalChargesTextArea.getText() + "\n\n" + "Opps2. +$200");
+							
+							totalCosts = totalCosts + 200;
+						}	
+						
+					}
+					
+					costsCounter++;
+					
+					//btnStart.setEnabled(false);					
+					//System.out.println(running);
+					
+					secondsPassed++;	
+					
+					if(testing == false)
+					{
+						timeText.setText(Double.toString(secondsPassed / 10));
+					}
+					
+					System.out.println(secondsPassed / 10 );	
+					//System.out.println(running);
+				}
+			}
+		};	
+		
+		if(running == true)
+		{
+			myTimer.scheduleAtFixedRate(task, 100, 100);
+		}
+		
+		running = true;		
 	}
 }
