@@ -12,9 +12,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -35,8 +38,8 @@ public class Login extends JFrame {
 	JFrame frame;
 
 	private JPanel contentPane;
-	private JTextField emailText;
-	private JPasswordField pswdText;
+	private JTextField nameText;
+	private JPasswordField passwordText;
 
 	private Connection connect = null;
 	private Statement statement = null;
@@ -45,7 +48,7 @@ public class Login extends JFrame {
 
 	static final String dbUrl = "jdbc:mysql://localhost:3306/spacedragons";
 	static final String uname = "root";
-	static final String password = "password";
+	static final String password = "";
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -70,10 +73,12 @@ public class Login extends JFrame {
 		contentPane.setLayout(null);
 
 		// Start of Header
-		JLabel lblLogo = new JLabel("Logo goes here");
+		JLabel lblLogo = new JLabel("");
 		lblLogo.setForeground(new Color(101, 255, 03));
 		lblLogo.setFont(new Font("Candara", Font.BOLD, 14));
-		lblLogo.setBounds(10, 11, 104, 23);
+		Image img = new ImageIcon(this.getClass().getResource("/ZorpLogoSmall.png")).getImage();
+		lblLogo.setIcon(new ImageIcon(img));	
+		lblLogo.setBounds(168, 27, 84, 64);
 		contentPane.add(lblLogo);
 
 		JLabel lblEnterYourDetails = new JLabel("Enter Details to ");
@@ -97,17 +102,17 @@ public class Login extends JFrame {
 		// End of Header
 
 		// Email Address
-		JLabel label = new JLabel("Galactic Address:");
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		label.setForeground(new Color(101, 255, 03));
-		label.setFont(new Font("Candara", Font.BOLD, 16));
-		label.setBounds(155, 213, 121, 28);
-		contentPane.add(label);
+		JLabel lblGalacticDesignationname = new JLabel("Galactic Designation (name):");
+		lblGalacticDesignationname.setHorizontalAlignment(SwingConstants.CENTER);
+		lblGalacticDesignationname.setForeground(new Color(101, 255, 03));
+		lblGalacticDesignationname.setFont(new Font("Candara", Font.BOLD, 16));
+		lblGalacticDesignationname.setBounds(116, 213, 197, 28);
+		contentPane.add(lblGalacticDesignationname);
 
-		emailText = new JTextField();
-		emailText.setColumns(10);
-		emailText.setBounds(155, 238, 121, 20);
-		contentPane.add(emailText);
+		nameText = new JTextField();
+		nameText.setColumns(10);
+		nameText.setBounds(155, 238, 121, 20);
+		contentPane.add(nameText);
 
 		// Password
 		JLabel lblPassword = new JLabel("Zorbword:");
@@ -117,37 +122,41 @@ public class Login extends JFrame {
 		lblPassword.setBounds(155, 281, 121, 28);
 		contentPane.add(lblPassword);
 
-		pswdText = new JPasswordField();
-		pswdText.setBounds(155, 305, 121, 20);
-		contentPane.add(pswdText);
+		passwordText = new JPasswordField();
+		passwordText.setBounds(155, 305, 121, 20);
+		contentPane.add(passwordText);
 
 		// Go Button
 		JButton btnGo = new JButton("GO!");
 		btnGo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				String uName = emailText.getText();
-				String pswd = pswdText.getText();
+				String uName = nameText.getText();
+				String pswd = passwordText.getText();
 				
 				try {
 					connect = DriverManager.getConnection(dbUrl, uname, password);
 					
-					String sql = "select * from user where email = '" + uName + "'";
+					String sql = "select * from citizen where name = '" + uName + "'";
 					
 					preparedStatement = connect.prepareStatement(sql);
 					resultSet = preparedStatement.executeQuery();
 					
 					if (resultSet.next()) {
 						
-						if (pswd.equals(resultSet.getString("pswd"))) {
+						if (pswd.equals(resultSet.getString("password"))) {
 							JOptionPane.showMessageDialog(frame, "Login Success");
+							int citizenId = resultSet.getInt("citizenId");
+							Parking parking = new Parking(citizenId);
+							parking.setVisible(true);
+							dispose();
 						}
 						else
 							JOptionPane.showMessageDialog(null, "Incorrect Password", "Oops!",
 									JOptionPane.ERROR_MESSAGE);					
 					}
 					else
-						JOptionPane.showMessageDialog(null, "No such Galactic Zorb address in database!", "Oops!",
+						JOptionPane.showMessageDialog(null, "No such Galactic Zorb designation in database!", "Oops!",
 								JOptionPane.ERROR_MESSAGE);
 					
 					
