@@ -5,8 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ HomeTest.class, LoginTest.class, ParkedTest.class, ParkingGUITimerTest.class, ParkingTest.class,
-	ParkingGUIStartButtonTest.class, RegisterTest.class, RetrieveTest.class, TermsTest.class })
+@SuiteClasses({ ParkingGUITimerTest.class, ParkingGUIStartButtonTest.class, ParkingGUIStopButtonTest.class })
 public class AllTests {
 
 } 

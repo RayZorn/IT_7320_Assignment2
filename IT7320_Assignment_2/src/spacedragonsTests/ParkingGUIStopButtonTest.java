@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import spacedragons.ParkingGUI;
 
-class ParkingGUIStopButtonTest {
+public class ParkingGUIStopButtonTest {
 	
 	double timerTime;
 	Boolean running = true;
