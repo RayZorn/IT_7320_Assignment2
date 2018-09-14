@@ -12,9 +12,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -42,14 +45,12 @@ public class Register extends JFrame {
 
 	static final String dbUrl = "jdbc:mysql://localhost:3306/spacedragons";
 	static final String uname = "root";
-	static final String password = "password";
+	static final String password = "";
 
-	private JTextField steedName;
+	private JTextField zorpbucks;
 	private JPasswordField confirmPassword;
 	private JPasswordField setPassword;
-	private JTextField nameLast_1;
-	private JTextField nameFirst_1;
-	private JTextField emailText;
+	private JTextField name;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -73,11 +74,14 @@ public class Register extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lblLogo = new JLabel("Logo goes here");
+		JLabel lblLogo = new JLabel("");
 		lblLogo.setForeground(new Color(101, 255, 03));
 		lblLogo.setFont(new Font("Candara", Font.BOLD, 14));
-		lblLogo.setBounds(172, 11, 104, 23);
+		Image img = new ImageIcon(this.getClass().getResource("/ZorpLogoSmall.png")).getImage();
+		lblLogo.setIcon(new ImageIcon(img));	
+		lblLogo.setBounds(18, 10, 84, 64);
 		contentPane.add(lblLogo);
+		
 
 		JLabel lblLogin = new JLabel("Register");
 		lblLogin.setHorizontalAlignment(SwingConstants.CENTER);
@@ -92,57 +96,31 @@ public class Register extends JFrame {
 		lblToShortlist.setBounds(144, 100, 113, 23);
 		contentPane.add(lblToShortlist);
 
-		// First Name label and Text
-		JLabel nameFirst = new JLabel("Zorb Name:");
-		nameFirst.setHorizontalAlignment(SwingConstants.CENTER);
-		nameFirst.setForeground(new Color(101, 255, 03));
-		nameFirst.setFont(new Font("Candara", Font.BOLD, 16));
-		nameFirst.setBounds(38, 138, 121, 28);
-		contentPane.add(nameFirst);
+		//Name label and Text
+		JLabel lblName = new JLabel("Galactic Designation:");
+		lblName.setHorizontalAlignment(SwingConstants.LEFT);
+		lblName.setForeground(new Color(101, 255, 03));
+		lblName.setFont(new Font("Candara", Font.BOLD, 16));
+		lblName.setBounds(58, 149, 152, 28);
+		contentPane.add(lblName);
 
-		nameFirst_1 = new JTextField();
-		nameFirst_1.setColumns(10);
-		nameFirst_1.setBounds(38, 158, 121, 20);
-		contentPane.add(nameFirst_1);
+		name = new JTextField();
+		name.setColumns(10);
+		name.setBounds(214, 153, 152, 20);
+		contentPane.add(name);
 
-		// Last Name Label and Text
-		JLabel nameLast = new JLabel("Zorb Name:");
-		nameLast.setHorizontalAlignment(SwingConstants.CENTER);
-		nameLast.setForeground(new Color(101, 255, 03));
-		nameLast.setFont(new Font("Candara", Font.BOLD, 16));
-		nameLast.setBounds(38, 184, 121, 28);
-		contentPane.add(nameLast);
+		// Zorpbucks Label and text
+		JLabel lblZorpbucks = new JLabel("Zorpbucks deposit:");
+		lblZorpbucks.setHorizontalAlignment(SwingConstants.LEFT);
+		lblZorpbucks.setForeground(new Color(101, 255, 3));
+		lblZorpbucks.setFont(new Font("Candara", Font.BOLD, 16));
+		lblZorpbucks.setBounds(58, 201, 132, 28);
+		contentPane.add(lblZorpbucks);
 
-		nameLast_1 = new JTextField();
-		nameLast_1.setColumns(10);
-		nameLast_1.setBounds(38, 205, 121, 20);
-		contentPane.add(nameLast_1);
-
-		// Email Address and text
-		JLabel label_1 = new JLabel("Zorbmail Address:");
-		label_1.setHorizontalAlignment(SwingConstants.CENTER);
-		label_1.setForeground(new Color(101, 255, 3));
-		label_1.setFont(new Font("Candara", Font.BOLD, 16));
-		label_1.setBounds(234, 134, 140, 28);
-		contentPane.add(label_1);
-
-		emailText = new JTextField();
-		emailText.setColumns(10);
-		emailText.setBounds(245, 158, 121, 20);
-		contentPane.add(emailText);
-
-		// Steed Name Label and text
-		JLabel label = new JLabel("Steed Name:");
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		label.setForeground(new Color(101, 255, 3));
-		label.setFont(new Font("Candara", Font.BOLD, 16));
-		label.setBounds(245, 184, 121, 28);
-		contentPane.add(label);
-
-		steedName = new JTextField();
-		steedName.setColumns(10);
-		steedName.setBounds(245, 205, 121, 20);
-		contentPane.add(steedName);
+		zorpbucks = new JTextField();
+		zorpbucks.setColumns(10);
+		zorpbucks.setBounds(200, 205, 166, 20);
+		contentPane.add(zorpbucks);
 
 		// Set Password
 		JLabel label_2 = new JLabel("Set Zorbword:");
@@ -186,20 +164,18 @@ public class Register extends JFrame {
 					try {
 						connect = DriverManager.getConnection(dbUrl, uname, password);
 	
-						String sql = "INSERT INTO user(nameFirst, nameLast, email,pswd,steedName) " + "VALUES('"
-								+ nameFirst.getText() + "','" + nameLast.getText() + "','" + emailText.getText() + "','"
-								+ confirmPassword.getText() + "','" + steedName.getText() + "')";
+						String sql = "INSERT INTO citizen(name, password, zorpbucks) " + "VALUES('"
+								+ name.getText() + "','" + confirmPassword.getText() + "','" + zorpbucks.getText() + "')";
+						//even if it says parts of this are depricated and slashes through them, you still need to leave them there.
 	
 						preparedStatement = connect.prepareStatement(sql);
 						preparedStatement.executeUpdate();
 						JOptionPane.showMessageDialog(frame, "You are now registered with zorbFetch");
 	
-						nameFirst_1.setText("");
-						nameLast_1.setText("");
-						emailText.setText("");
+						name.setText("");
 						setPassword.setText("");
 						confirmPassword.setText("");
-						steedName.setText("");
+						zorpbucks.setText("");
 	
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -258,6 +234,13 @@ public class Register extends JFrame {
 		exit.setBackground(new Color(101, 255, 3));
 		exit.setBounds(378, 10, 47, 23);
 		contentPane.add(exit);
+		
+		JLabel lblname = new JLabel("(name)");
+		lblname.setHorizontalAlignment(SwingConstants.CENTER);
+		lblname.setForeground(new Color(101, 255, 3));
+		lblname.setFont(new Font("Candara", Font.BOLD, 11));
+		lblname.setBounds(125, 172, 152, 15);
+		contentPane.add(lblname);
 
 	}
 }
